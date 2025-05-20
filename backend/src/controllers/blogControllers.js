@@ -1,4 +1,4 @@
-import blogModel from "../models/blog.js"
+import blogModel from "../models/Blog.js"
 import {v2 as cloudinary} from 'cloudinary'
 import { config } from "../config.js"
 

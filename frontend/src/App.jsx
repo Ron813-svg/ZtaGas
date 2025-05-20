@@ -1,13 +1,10 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import Nav from './components/Nav.jsx'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Login from './screen/LogCard.jsx'
-import Register from './screen/Registro.jsx';
-
-
-import Inicio from './screen/Inicio.jsx'
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import Nav from './components/Nav.jsx';
+import Login from './pages/LogCard.jsx';
+import Register from './pages/Registro.jsx';
+import Inicio from './pages/Inicio.jsx';
+import Blogs from './pages/Blogs.jsx';
 
 function AppContent() {
   const location = useLocation();
@@ -16,21 +13,20 @@ function AppContent() {
 
   useEffect(() => {
     const currentPath = location.pathname.toLowerCase().replace(/\/$/, '');
+    const shouldHideNav = authRoutes.some((route) => currentPath === route || currentPath.startsWith(route + '/'));
+    setIsOpen(!shouldHideNav);
+  }, [location.pathname]);
 
-    const shouldHideNav = authRoutes.some((route) => {
-      return currentPath === route || currentPath.startsWith(route + '/')
-  });
-  setIsOpen(!shouldHideNav);
-  }
-  , [location.pathname]);
   return (
     <>
       {isOpen && <Nav />}
       <div className="container">
         <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/inicio" element={<Inicio />} />
+          <Route path="/blogs" element={<Blogs/>} />
         </Routes>
       </div>
     </>
@@ -38,13 +34,11 @@ function AppContent() {
 }
 
 function App() {
-
   return (
     <Router>
       <AppContent />
     </Router>
-    
-  )
+  );
 }
 
-export default App
+export default App;

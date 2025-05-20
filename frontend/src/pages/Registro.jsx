@@ -38,7 +38,7 @@ const Register = () => {
       
       //if (response.ok) {
         alert('¡Registro exitoso!');
-        navigate('/'); // Redirigir a la página de inicio de sesión
+        navigate('/login'); // Redirigir a la página de inicio de sesión
       //} else {
        // throw new Error('Error en el registro');
         //alert('Error en el registro. Por favor, revisa tus datos.');

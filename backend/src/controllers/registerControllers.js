@@ -6,7 +6,7 @@ import {config} from '../config.js';
 const registerController = {};
 
 registerController.Register = async (req, res) => {
-    const {name, lastName, birthday, email, hireDate, password, telephone, dui, isssNumber, isVerified } = req.body;
+    const {name, lastName, birthday, email, hireDate, password, telephone, dui, isssNumber } = req.body;
     try{
         const existeEmployee = await registerModel.findOne({email})
         if(existeEmployee){
@@ -15,7 +15,7 @@ registerController.Register = async (req, res) => {
 
         const passwordHash = await bcryptjs.hash(password,10)
 
-        const newEmployee = await registerModel({name, lastName, birthday, email, hireDate, password: passwordHash, telephone, dui, isssNumber, isVerified })
+        const newEmployee = await registerModel({name, lastName, birthday, email, hireDate, password: passwordHash, telephone, dui, isssNumber, isVerified: false })
 
         await newEmployee.save()
 

@@ -42,7 +42,7 @@ const Login = () => {
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="card shadow-sm" style={{ maxWidth: '22rem', width: '100%' }}>
-        <div className="card-header bg-primary text-white text-center">
+        <div className="card-header bg-white text-black text-center">
           <h5 className="mb-0">Iniciar sesión</h5>
         </div>
         <div className="card-body">
@@ -77,9 +77,12 @@ const Login = () => {
             <button type="submit" className="btn btn-primary w-100">Iniciar sesión</button>
           </form>
           <div className="mt-3">
-            <button type="button" className="btn btn-secondary w-100" onClick={handleRegister}>
+            <h5 className="mb-0">No tienes cuenta?</h5>
+            <div className='mt-3'>
+              <button type="button" className="btn btn-secondary w-100" onClick={handleRegister}>
               Registrarse
             </button>
+            </div>
           </div>
         </div>
       </div>

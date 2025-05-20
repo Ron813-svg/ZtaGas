@@ -20,16 +20,17 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
         credentials: 'include',
       });
+          alert('¡Inicio exitoso!');
+          navigate('/inicio'); // Redirigir a la página de inicio
 
-      if (response.ok) {
+      /*if (response.ok) {
         setShowAlert(true);
         setTimeout(() => {
-          setShowAlert(false);
-          navigate('/inicio'); // Redirigir a la página de inicio
+         
         }, 4000);
       } else {
         throw new Error('Credenciales incorrectas');
-      }
+      }*/
     } catch (error) {
       alert('Error al iniciar sesión. Por favor, revisa tus credenciales.');
     }

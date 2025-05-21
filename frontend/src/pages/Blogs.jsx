@@ -7,7 +7,7 @@ const Blogs = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
-  const fileInputRef = useRef(null);
+  
   const [blogs, setBlogs] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -26,23 +26,19 @@ const Blogs = () => {
     alertDiv.style.zIndex = "1000";
     alertDiv.style.opacity = "1";
     alertDiv.style.transition = "opacity 0.5s ease-out";
-
     document.body.appendChild(alertDiv);
-
     setTimeout(() => {
       alertDiv.style.opacity = "0";
       setTimeout(() => document.body.removeChild(alertDiv), 500);
     }, 3000);
   };
 
-  const deleteData = async (e, id) => {
+  const deleteData = async (id) => {
     console.log("Eliminando ID:", id);
-
     try {
       const response = await fetch(`http://localhost:4000/api/blog/${id}`, {
         method: "DELETE",
       });
-
       if (response.ok) {
         showAutoAlert("Se ha borrado correctamente");
         fetchData();
@@ -68,18 +64,16 @@ const Blogs = () => {
     fetchData();
   }, []);
 
-  const handleUpdate = async (id) => {
+  const handleUpdate = async (id, e) => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
     formData.append("image", image);
-
     try {
       const response = await fetch(`http://localhost:4000/api/blog/${id}`, {
         method: "PUT",
         body: formData,
       });
-
       if (response.ok) {
         showAutoAlert("Se ha actualizado correctamente");
       } else {
@@ -90,20 +84,18 @@ const Blogs = () => {
       console.log("Hubo un error: " + error);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
     formData.append("image", image);
-
     try {
       const response = await fetch("http://localhost:4000/api/blog", {
         method: "POST",
         body: formData,
       });
-
       if (response.ok) {
         fetchData();
         showAutoAlert("Se ha insertado correctamente");
@@ -212,7 +204,6 @@ const Blogs = () => {
               </div>
               <div className="container-fluid row">
                 <div className="row justify-content-around m-3">
-
                   {/*Parte de eliminar*/}
                   <button
                     onClick={() => setDeleteModal(true)}
@@ -254,8 +245,13 @@ const Blogs = () => {
                     </div>
                   )}
 
-                  {/* Parte de actualizar*/ }
-                  <button className="btn btn-primary col-4"  onClick={() => setUpdateModal(true)}>Actualizar</button>
+                  {/* Parte de actualizar*/}
+                  <button
+                    className="btn btn-primary col-4"
+                    onClick={() => setUpdateModal(true)}
+                  >
+                    Actualizar
+                  </button>
                   {updateModal && (
                     <div className="modal show d-block" tabIndex="-1">
                       <div className="modal-dialog">
@@ -314,7 +310,7 @@ const Blogs = () => {
                               </div>
 
                               <button
-                                type="submit"
+                                onClick={() => handleUpdate(blog._id) && fetchData()}
                                 className="btn btn-info w-100"
                               >
                                 Guardar los nuevos datos

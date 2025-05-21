@@ -11,7 +11,7 @@ const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
-  const [updateModal, setUpdateModal] = useState(false)
+  const [updateModal, setUpdateModal] = useState(false);
 
   const showAutoAlert = (message) => {
     const alertDiv = document.createElement("div");
@@ -35,8 +35,7 @@ const Blogs = () => {
     }, 3000);
   };
 
-  
-  const deleteData = async (id) => {
+  const deleteData = async (e, id) => {
     console.log("Eliminando ID:", id);
 
     try {
@@ -69,6 +68,28 @@ const Blogs = () => {
     fetchData();
   }, []);
 
+  const handleUpdate = async (id) => {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("image", image);
+
+    try {
+      const response = await fetch(`http://localhost:4000/api/blog/${id}`, {
+        method: "PUT",
+        body: formData,
+      });
+
+      if (response.ok) {
+        showAutoAlert("Se ha actualizado correctamente");
+      } else {
+        showAutoAlert("Hubo un error al borrar ");
+      }
+    } catch (error) {
+      alert("Error al actualizar los datos: " + error.message);
+      console.log("Hubo un error: " + error);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -90,7 +111,7 @@ const Blogs = () => {
         setContent("");
         setImage(null);
         document.getElementById("image").value = "";
-        setShowModal(false); // Cierra el modal después de guardar
+        setShowModal(false);
       } else {
         throw new Error("Error en la inserción");
       }
@@ -111,6 +132,7 @@ const Blogs = () => {
         </button>
       </div>
 
+      {/*Parte de agregar*/}
       {showModal && (
         <div className="modal show d-block" tabIndex="-1">
           <div className="modal-dialog">
@@ -190,10 +212,10 @@ const Blogs = () => {
               </div>
               <div className="container-fluid row">
                 <div className="row justify-content-around m-3">
+
+                  {/*Parte de eliminar*/}
                   <button
-                   onClick={() =>
-                      setDeleteModal(true)
-                    }
+                    onClick={() => setDeleteModal(true)}
                     className="btn btn-danger col-4"
                   >
                     Borrar
@@ -211,7 +233,9 @@ const Blogs = () => {
                           <div className="modal-body">
                             <div className="row justify-content-around">
                               <button
-                                onClick={() => deleteData(blog._id) && setDeleteModal(false)}
+                                onClick={() =>
+                                  deleteData(blog._id) && setDeleteModal(false)
+                                }
                                 className="btn btn-danger col-4"
                               >
                                 Borrar
@@ -229,7 +253,78 @@ const Blogs = () => {
                       </div>
                     </div>
                   )}
-                  <button className="btn btn-primary col-4">Actualizar</button>
+
+                  {/* Parte de actualizar*/ }
+                  <button className="btn btn-primary col-4"  onClick={() => setUpdateModal(true)}>Actualizar</button>
+                  {updateModal && (
+                    <div className="modal show d-block" tabIndex="-1">
+                      <div className="modal-dialog">
+                        <div className="modal-content">
+                          <div className="modal-header">
+                            <h5 className="modal-title">
+                              Ingresar Datos para el Blog
+                            </h5>
+                            <button
+                              type="button"
+                              className="btn-close"
+                              onClick={() => setUpdateModal(false)}
+                            ></button>
+                          </div>
+                          <div className="modal-body">
+                            <form onSubmit={handleUpdate}>
+                              <div className="mb-3">
+                                <label htmlFor="title" className="form-label">
+                                  Título
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  id="title"
+                                  value={title}
+                                  onChange={(e) => setTitle(e.target.value)}
+                                  required
+                                />
+                              </div>
+
+                              <div className="mb-3">
+                                <label htmlFor="content" className="form-label">
+                                  Contenido
+                                </label>
+                                <textarea
+                                  className="form-control"
+                                  id="content"
+                                  rows="4"
+                                  value={content}
+                                  onChange={(e) => setContent(e.target.value)}
+                                  required
+                                />
+                              </div>
+
+                              <div className="mb-3">
+                                <label htmlFor="image" className="form-label">
+                                  Seleccionar Imagen
+                                </label>
+                                <input
+                                  type="file"
+                                  className="form-control"
+                                  id="image"
+                                  accept="image/*"
+                                  onChange={(e) => setImage(e.target.files[0])}
+                                />
+                              </div>
+
+                              <button
+                                type="submit"
+                                className="btn btn-info w-100"
+                              >
+                                Guardar los nuevos datos
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

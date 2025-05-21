@@ -44,11 +44,15 @@ blogController.post = async (req, res) => {
   }
 };
 
-blogController.put = async (req, res) => {
+/*blogController.put = async (req, res) => {
   try {
     const { title, content } = req.body;
     const { id } = req.params;
     let imgUrl = "";
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(400).json({ error: "ID inválido" })
+    }
 
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path, {
@@ -63,7 +67,7 @@ blogController.put = async (req, res) => {
       { title, content, image: imgUrl },
       { new: true }
     );
-
+// 
     if (!updatedBlog) {
       return res.status(404).json({ error: "Blog no encontrado" });
     }
@@ -73,7 +77,50 @@ blogController.put = async (req, res) => {
     console.error("Error al actualizar el blog:", error);
     res.status(500).json({ error: "Error al actualizar el blog" });
   }
+};*/
+
+blogController.put = async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "ID inválido" });
+    }
+
+    let imgUrl;
+
+    const existingBlog = await blogModel.findById(id);
+    if (!existingBlog) {
+      return res.status(404).json({ error: "Blog no encontrado" });
+    }
+
+    if (req.file) {
+      try {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "public",
+          allowed_formats: ["jpg", "png", "jpeg"],
+        });
+        imgUrl = result.secure_url;
+      } catch (error) {
+        console.error("Error al subir imagen:", error);
+        return res.status(500).json({ error: "Error al subir la imagen" });
+      }
+    }
+
+    const updatedBlog = await blogModel.findByIdAndUpdate(
+      id,
+      { title, content, image: imgUrl || existingBlog.image },
+      { new: true }
+    );
+
+    res.json({ message: "Blog actualizado correctamente", blog: updatedBlog });
+  } catch (error) {
+    console.error("Error al actualizar el blog:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
 };
+
 
 blogController.delete = async (req, res) => {
     try {

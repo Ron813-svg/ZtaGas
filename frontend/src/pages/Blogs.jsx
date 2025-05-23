@@ -64,23 +64,32 @@ const Blogs = () => {
     fetchData();
   }, []);
 
-  const handleUpdate = async (id, e) => {
+  const handleUpdate = async (id) => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
     formData.append("image", image);
     try {
+      console.log("ID que se pasa al update:", id);
       const response = await fetch(`http://localhost:4000/api/blog/${id}`, {
         method: "PUT",
         body: formData,
       });
+      
       if (response.ok) {
-        showAutoAlert("Se ha actualizado correctamente");
+        alert("Se ha actualizado correctamente");
+        await fetchData() 
+        setUpdateModal(false)
+        setTitle("");
+        setContent("");
+        setImage(null);
+        document.getElementById("image").value = "";
+
       } else {
-        showAutoAlert("Hubo un error al borrar ");
+        showAutoAlert("Hubo un error al actualizar ");
       }
     } catch (error) {
-      alert("Error al actualizar los datos: " + error.message);
+      
       console.log("Hubo un error: " + error);
     }
   };
@@ -134,7 +143,7 @@ const Blogs = () => {
                 <button
                   type="button"
                   className="btn-close"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => setShowModal(false, setTitle(""), setContent(""), setImage(null)) }
                 ></button>
               </div>
               <div className="modal-body">
@@ -267,7 +276,7 @@ const Blogs = () => {
                             ></button>
                           </div>
                           <div className="modal-body">
-                            <form onSubmit={handleUpdate}>
+                            <form onSubmit={(e) => e.preventDefault()}>
                               <div className="mb-3">
                                 <label htmlFor="title" className="form-label">
                                   Título
@@ -310,7 +319,7 @@ const Blogs = () => {
                               </div>
 
                               <button
-                                onClick={() => handleUpdate(blog._id) && fetchData()}
+                                onClick={() => handleUpdate(blog._id) }
                                 className="btn btn-info w-100"
                               >
                                 Guardar los nuevos datos

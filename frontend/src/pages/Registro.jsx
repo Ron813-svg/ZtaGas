@@ -15,10 +15,10 @@ const Register = () => {
   const [dui, setDui] = useState('');
   const [isssNumber, setIsssNumber] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async  (e) =>  {
     e.preventDefault();
     try {
-      const response = fetch('http://localhost:4000/api/register', {
+      const response = await fetch('http://localhost:4000/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -36,13 +36,13 @@ const Register = () => {
         }),
       });
       
-      //if (response.ok) {
+      if (response.ok) {
         alert('¡Registro exitoso!');
-        navigate('/login'); // Redirigir a la página de inicio de sesión
-      //} else {
-       // throw new Error('Error en el registro');
-        //alert('Error en el registro. Por favor, revisa tus datos.');
-      //}
+        navigate('/login'); 
+      } else {
+        throw new Error('Error en el registro');
+        alert('Error en el registro. Por favor, revisa tus datos.');
+      }
     } catch (error) {
       alert('Error al registrarse. Por favor, revisa tus datos.' + error.message);
       console.error('Error en el registro:', error);

@@ -37,7 +37,7 @@ const app = express();
 app.use(express.json());
 app.use(cors(corsOptions))
 app.use(cookieParser());
-app.use("/api/products", validateAuthToken(['employee', 'admin']), productsRoutes);
+app.use("/api/products", /*validateAuthToken(['employee', 'admin']),*/ productsRoutes);
 app.use("/api/clients", clientsRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/branches", branchesRoutes);

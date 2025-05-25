@@ -7,11 +7,13 @@ const Blogs = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   
   const [blogs, setBlogs] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState(null); 
 
   const showAutoAlert = (message) => {
     const alertDiv = document.createElement("div");
@@ -41,7 +43,7 @@ const Blogs = () => {
       });
       if (response.ok) {
         showAutoAlert("Se ha borrado correctamente");
-        fetchData();
+        await fetchData();
       } else {
         throw new Error("Error al eliminar el blog");
       }
@@ -83,6 +85,7 @@ const Blogs = () => {
         setTitle("");
         setContent("");
         setImage(null);
+        setPreviewImage(null);
         document.getElementById("image").value = "";
 
       } else {
@@ -106,11 +109,12 @@ const Blogs = () => {
         body: formData,
       });
       if (response.ok) {
-        fetchData();
+         await fetchData();
         showAutoAlert("Se ha insertado correctamente");
         setTitle("");
         setContent("");
         setImage(null);
+        setPreviewImage(null);
         document.getElementById("image").value = "";
         setShowModal(false);
       } else {
@@ -257,22 +261,34 @@ const Blogs = () => {
                   {/* Parte de actualizar*/}
                   <button
                     className="btn btn-primary col-4"
-                    onClick={() => setUpdateModal(true)}
+                    onClick={() => {
+                      setUpdateModal(true);
+                      setSelectedBlog(blog); // Guarda el blog seleccionado
+                      setTitle(blog.title);
+                      setContent(blog.content);
+                      setPreviewImage(blog.image);
+                      setImage(null);
+                    }}
                   >
                     Actualizar
                   </button>
-                  {updateModal && (
+                  {updateModal && selectedBlog && (
                     <div className="modal show d-block" tabIndex="-1">
                       <div className="modal-dialog">
                         <div className="modal-content">
                           <div className="modal-header">
-                            <h5 className="modal-title">
-                              Ingresar Datos para el Blog
-                            </h5>
+                            <h5 className="modal-title">Ingresar Datos para el Blog</h5>
                             <button
                               type="button"
                               className="btn-close"
-                              onClick={() => setUpdateModal(false)}
+                              onClick={() => {
+                                setUpdateModal(false);
+                                setSelectedBlog(null);
+                                setTitle("");
+                                setContent("");
+                                setImage(null);
+                                setPreviewImage(null);
+                              }}
                             ></button>
                           </div>
                           <div className="modal-body">
@@ -309,17 +325,29 @@ const Blogs = () => {
                                 <label htmlFor="image" className="form-label">
                                   Seleccionar Imagen
                                 </label>
+                                {previewImage && (
+                                  <img
+                                    src={previewImage}
+                                    alt="Vista previa"
+                                    style={{ width: "100%", maxHeight: "200px", objectFit: "contain", marginBottom: "10px" }}
+                                  />
+                                )}
                                 <input
                                   type="file"
                                   className="form-control"
                                   id="image"
                                   accept="image/*"
-                                  onChange={(e) => setImage(e.target.files[0])}
+                                  onChange={(e) => {
+                                    setImage(e.target.files[0]);
+                                    if (e.target.files[0]) {
+                                      setPreviewImage(URL.createObjectURL(e.target.files[0]));
+                                    }
+                                  }}
                                 />
                               </div>
 
                               <button
-                                onClick={() => handleUpdate(blog._id) }
+                                onClick={() => handleUpdate(selectedBlog._id)}
                                 className="btn btn-info w-100"
                               >
                                 Guardar los nuevos datos

@@ -20,6 +20,7 @@ productsController.insertProducts = async (req, res) =>{
     const { name, description, price, stock } = req.body;
     const newProduct = new productsModel({ name,description,price,stock })
     await newProduct.save()
+    res.json({ message: "Product added" });
 }
 
 //Delete

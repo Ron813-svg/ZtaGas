@@ -19,6 +19,8 @@ registerController.Register = async (req, res) => {
 
         await newEmployee.save()
 
+        res.json({ message: "Nuevo empleado registrado" });
+
         jsonwebtoken.sign(
             {id: newEmployee._id},
             

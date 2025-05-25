@@ -7,8 +7,8 @@ const Products = () => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
-  const [products, setProducts] = useState([]);
 
+  const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
@@ -38,7 +38,8 @@ const Products = () => {
     try {
       const response = await fetch("http://localhost:4000/api/products");
       const data = await response.json();
-      setProducts(data); 
+      console.log("Respuesta del backend:", data);
+      setProducts(data);
     } catch (error) {
       console.error("Error a obtener los datos: ", error);
     }
@@ -72,7 +73,15 @@ const Products = () => {
         setShowModal(false);
         fetchData();
       } else {
-        throw new Error("Error en el registro");
+        const errorData = await response.json();
+        alert(
+          "Error en el registro: " +
+            (errorData.message || JSON.stringify(errorData))
+        );
+        throw new Error(
+          "Error en el registro: " +
+            (errorData.message || JSON.stringify(errorData))
+        );
       }
     } catch (error) {
       alert("Error al registrar el producto. " + error.message);

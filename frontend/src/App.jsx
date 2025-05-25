@@ -6,7 +6,7 @@ import Register from './pages/Registro.jsx';
 import Inicio from './pages/Inicio.jsx';
 import Blogs from './pages/Blogs.jsx';
 import Assessment from './pages/Assessment.jsx';
-import Products from './pages/Products.jsx';
+import Product from './pages/Products.jsx';
 
 function AppContent() {
   const location = useLocation();
@@ -30,7 +30,7 @@ function AppContent() {
           <Route path="/inicio" element={<Inicio />} />
           <Route path="/blogs" element={<Blogs/>} />
           <Route path="/assessment" element={<Assessment/>}/>
-          <Route path="/products" element={<Products/>}/>
+          <Route path="/products" element={<Product/>}/>
           
         </Routes>
       </div>
